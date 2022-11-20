@@ -1,4 +1,4 @@
-import BloctoSDK from "@blocto/sdk";
+import BloctoSDK from '@blocto/sdk';
 
 const bloctoSDK = new BloctoSDK({
   aptos: {
