@@ -1,7 +1,7 @@
 import './App.css';
 import styled from 'styled-components';
-import GetAccount from './GetAccount';
-import SendTransaction from './SendTransaction';
+import GetAccount from './demo/GetAccount';
+import SendTransaction from './demo/SendTransaction';
 
 const Wrapper = styled.div`
   font-size: 13px;

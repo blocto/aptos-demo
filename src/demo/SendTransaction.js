@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import bloctoSDK from './services/blocto';
+import bloctoSDK from '../services/blocto';
 
 const Card = styled.div`
   margin: 10px 5px;
   padding: 10px;
   border: 1px solid #c0c0c0;
   border-radius: 5px;
-`
+`;
 
 const Code = styled.pre`
   background: #f0f0f0;
@@ -15,9 +15,13 @@ const Code = styled.pre`
   max-height: 150px;
   overflow-y: auto;
   padding: 5px;
-`
+`;
 
-const SendTransactionButton = ({ setHash }) => {
+const Error = styled(Code)`
+  color: red;
+`;
+
+const SendTransactionButton = ({ setHash, setError }) => {
   const sendTransaction = async (event) => {
     event.preventDefault()
 
@@ -36,9 +40,15 @@ const SendTransactionButton = ({ setHash }) => {
       type_arguments: ['0x1::aptos_coin::AptosCoin'],
     }
 
-    // sign and submit the transaction & get the tx hash
-    const { hash } =  await bloctoSDK.aptos.signAndSubmitTransaction(transaction)
-    setHash(hash)
+    try {
+      // sign and submit the transaction & get the tx hash
+      const { hash } = await bloctoSDK.aptos.signAndSubmitTransaction(transaction)
+      setHash(hash)
+      setError(null)
+    } catch (error) {
+      setHash(null)
+      setError(String(error))
+    }
   }
 
   return (
@@ -50,12 +60,15 @@ const SendTransactionButton = ({ setHash }) => {
 
 const SendTransaction = () => {
   const [hash, setHash] = useState()
+  const [error, setError] = useState()
 
   return (
     <Card>
-      <SendTransactionButton setHash={setHash} />
+      <SendTransactionButton setHash={setHash} setError={setError} />
 
       {hash && <Code><a href={`https://explorer.aptoslabs.com/txn/${hash}?network=testnet`} target="blank">{hash}</a></Code>}
+
+      {error && <Error>{error}</Error>}
     </Card>
   )
 }
